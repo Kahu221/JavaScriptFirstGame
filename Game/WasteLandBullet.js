@@ -6,17 +6,18 @@ canvas.height = 700;
 c.fillRect(0,0, canvas.width, canvas.height);
 
 
+
 //background objects
 const background5 = new Image();
-background5.src = '/MenuImages/MenuBack.png';
+background5.src = './MenuImages/MenuBack.png';
 const background4 = new Image();
-background4.src = '/MenuImages/Menu4.png';
+background4.src = './MenuImages/Menu4.png';
 const background3 = new Image();
-background3.src = '/MenuImages/Menu3.png';
+background3.src = './MenuImages/Menu3.png';
 const background2 = new Image();
-background2.src = '/MenuImages/Menu2.png';
+background2.src = './MenuImages/Menu2.png';
 const background1 = new Image();
-background1.src = '/MenuImages/Menu1.png';
+background1.src = './MenuImages/Menu1.png';
 
 //players
 const player1 = new Player({
