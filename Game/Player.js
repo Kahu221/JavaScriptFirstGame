@@ -56,12 +56,27 @@ class Player {
             PLAYERWIDTH_IMAGE,
             PLAYERHEIGHT_IMAGE
         );
+        c.fillStyle = 'black';
+        //top hotbox
         c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 3, 13,14);
+        //bottom hitbox
         c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 30, 13,14);
+        // if(this.bottomCollision(c)){
+           
+        // } 
+        //left hitbox
         c.fillRect(this.x + 5, this.y+10, 5,30);
+        if(this.leftCollision(c)){
+            c.fillStyle = 'white';
+            c.fillRect(this.x + 5, this.y+10, 5,30);
+        } 
+        //right hitbox
         c.fillRect(this.x + PLAYERWIDTH - 6, this.y+10, 5,30);
+        if(this.rightCollision(c)){
+            c.fillStyle = 'white';
+            c.fillRect(this.x + PLAYERWIDTH - 6, this.y+10, 5,30);
+        } 
 
-        //if(this.touchingTop) c.fillRect(Math.floor((this.x + PLAYERWIDTH/3)/25) * 25, Math.floor((this.y + 3 - 25)/25) * 25,25,25);
     }
     /**
     * @param {HTMLCanvasElement} canvas
@@ -105,12 +120,100 @@ class Player {
     updateCollisionWithTiles(){
         
     }
-    // c.fillRect(this.x + PLAYERWIDTH - 6, this.y+10, 5,30);
-    topCollision(){
-        let tileX = Math.floor((this.x + PLAYERWIDTH - 6) / 25) * 25;
-        let tileY = Math.floor((this.y + 3)/25) * 25;
-        if(this.collision()) {}
+   
+    //right side collision check and adjustments
+    rightCollision(c){
+        //right hit box values
+        let rightX = this.x + PLAYERWIDTH - 6;
+        let rightY = this.y+10;
+        let rightW = 5;
+        let rightH = 30;
+        //tile to check values
+        let tileXPos = Math.floor((rightX) / TILESIZE);
+        let tileYPos = Math.floor(rightY/ TILESIZE);
+        let tileX = tileXPos * TILESIZE;
+        let tileY = tileYPos * TILESIZE;
+        //current Tile that is being checked
+        // c.fillStyle = 'red';
+        // c.fillRect(tileX,tileY,TILESIZE,TILESIZE);
+        if((map1[tileYPos][tileXPos] != 0) && this.collision(rightX,rightY,rightW,rightH,tileX,tileY,TILESIZE,TILESIZE)) {
+            this.xVel = 0;
+            this.x = tileX - 21;
+            return true;
+        }
+        return false;
     }
+
+    //left collision check and adjustments
+    leftCollision(c){
+        let leftX = this.x + 5;
+        let leftY = this.y + 10;
+        let leftW = 5;
+        let leftH = 30;
+        //tile to check values
+        let tileXPos = Math.floor((leftX) / TILESIZE);
+        let tileYPos = Math.floor(leftY/ TILESIZE);
+        let tileX = tileXPos * TILESIZE;
+        let tileY = tileYPos * TILESIZE;
+        //current Tile that is being checked
+        // c.fillStyle = 'red';
+        // c.fillRect(tileX,tileY,TILESIZE,TILESIZE);
+        if((map1[tileYPos][tileXPos] != 0) && this.collision(leftX,leftY,leftW,leftH,tileX,tileY,TILESIZE,TILESIZE)) {
+            this.xVel = 0;
+            this.x = tileX + 21;
+            return true;
+        }
+        return false;
+    }
+    //TODO
+    //c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 3, 13,14);
+    // topCollision(c){
+    //     let topX = this.x + (PLAYERWIDTH / 3);
+    //     let topY = this.y + 3;
+    //     let topW = 13;
+    //     let topH = 14;
+    //     //tile to check values
+    //     let tileXPos = Math.floor((topX) / TILESIZE);
+    //     let tileYPos = Math.floor(topY/ TILESIZE);
+    //     let tileX = tileXPos * TILESIZE;
+    //     let tileY = tileYPos * TILESIZE;
+    //     //current Tile that is being checked
+    //     // c.fillStyle = 'red';
+    //     // c.fillRect(tileX,tileY,TILESIZE,TILESIZE);
+    //     if((map1[tileYPos][tileXPos] != 0) && this.collision(topX,topY,topW,topH,topX,tileY,TILESIZE,TILESIZE)) {
+    //         this.yVel = 0;
+    //         this.y = tileY +25;
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    //c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 30, 13,14);
+    /**
+     * collision check witht he bottom hit box
+     * @param {*} c canavs to draw on 
+     * @returns boolean if the bottom hit box is touching a tile with a non zero value
+     */
+    // bottomCollision(c){
+    //     let bottomX = this.x + (PLAYERWIDTH / 3);
+    //     let bottomY = this.y + 30 ;
+    //     let bottomW = 13;
+    //     let bottomH = 14;
+    //     //tile to check values
+    //     let tileXPos = Math.floor((bottomX) / TILESIZE);
+    //     let tileYPos = Math.floor(bottomY/ TILESIZE);
+    //     let tileX = tileXPos * TILESIZE;
+    //     let tileY = tileYPos * TILESIZE;
+    //     //current Tile that is being checked
+    //     // c.fillStyle = 'red';
+    //     // c.fillRect(tileX,tileY,TILESIZE,TILESIZE);
+    //     if((map1[tileYPos][tileXPos] != 0) && this.collision(bottomX,bottomY,bottomW,bottomH,tileX,tileY,TILESIZE,TILESIZE)) {
+    //         this.yVel = 0;
+    //         this.y = tileY;
+    //         return true;
+    //     }
+    //     return false;
+    // }
     /**
      * collision between 2 rectangles
      */
