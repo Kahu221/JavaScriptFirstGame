@@ -1,11 +1,6 @@
 
 
-const playerState = {
-    idleRight: 1,
-    idleLeft: 2,
-    movingRight: 3,
-    movingLeft: 4
-}
+
 //constant variables
 const PLAYERHEIGHT = 46;
 const PLAYERWIDTH = 28;
@@ -20,12 +15,15 @@ class Player {
         x,
         y, 
         playerNum, 
-        imageSrc,  
+        imageSrc,
+        imageSrc2 
     }) {
         
         //sprite info
         this.image = new Image();
         this.image.src = String(imageSrc);
+        this.leftImage = new Image();
+        this.leftImage.src = String(imageSrc2);
         this.framesCurrent = 0;
         this.framesElapsed = 0;
         
@@ -40,22 +38,66 @@ class Player {
         this.yVel = 0; 
         this.xVel = 0;
         this.playerNum = playerNum;
+        //rightIdle, leftIdle, right, left
+        this.playerState = "rightIdle";
     }
     /**
     * @param {CanvasRenderingContext2D} c
     */
     draw(c){
-        c.drawImage(
-            this.image,
-            0,
-            (this.framesCurrent *  PLAYERHEIGHT_IMAGE) + 1,
-            PLAYERWIDTH_IMAGE,
-            PLAYERHEIGHT_IMAGE,
-            this.x,
-            this.y,
-            PLAYERWIDTH_IMAGE,
-            PLAYERHEIGHT_IMAGE
-        );
+        switch(this.playerState){
+            case "rightIdle" :
+                c.drawImage( this.image,
+                    0,
+                    PLAYERHEIGHT_IMAGE + 1,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE,
+                    this.x,
+                    this.y,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE
+                );
+            break;
+            case "right" :
+                c.drawImage(
+                    this.image,
+                    0,
+                    (this.framesCurrent *  PLAYERHEIGHT_IMAGE) + 1,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE,
+                    this.x,
+                    this.y,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE
+                );
+            break;
+            case "leftIdle" :    
+                c.drawImage(
+                    this.leftImage,
+                    0,
+                    PLAYERHEIGHT_IMAGE + 1,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE,
+                    this.x,
+                    this.y,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE
+                );
+            break;
+            case "left" :
+                c.drawImage(
+                    this.leftImage,
+                    0,
+                    (this.framesCurrent *  PLAYERHEIGHT_IMAGE) + 1,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE,
+                    this.x,
+                    this.y,
+                    PLAYERWIDTH_IMAGE,
+                    PLAYERHEIGHT_IMAGE
+                );  
+            break;
+        }
     }
     /**
     * @param {HTMLCanvasElement} canvas
@@ -75,8 +117,7 @@ class Player {
         if(this.y + PLAYERHEIGHT  + GRAVITY >= canvas.height){
             this.yVel = 0;
             this.y = canvas.height - PLAYERHEIGHT;
-        } 
-            
+        }             
     }
 
     //move in directions
@@ -142,7 +183,6 @@ class Player {
         let leftH = 30;
         //tile to check values
         let tileXPos = Math.floor((leftX) / TILESIZE);
-        
         let tileYPos = Math.floor(leftY/ TILESIZE);
         let tileX = tileXPos * TILESIZE;
         let tileY = tileYPos * TILESIZE;
@@ -219,11 +259,18 @@ class Player {
         return false;
     }
     /**
-     * collision between 2 rectangles
+     *  collision check between 2 rectangles
+     * @param {*} r1x 
+     * @param {*} r1y 
+     * @param {*} r1w 
+     * @param {*} r1h 
+     * @param {*} r2x 
+     * @param {*} r2y 
+     * @param {*} r2w 
+     * @param {*} r2h 
+     * @returns True if intersecting, false if not
      */
     collision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h){
-         // are the sides of one rectangle touching the other?
-
         if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
             r1x <= r2x + r2w &&    // r1 left edge past r2 right
             r1y + r1h >= r2y &&    // r1 top edge past r2 bottom

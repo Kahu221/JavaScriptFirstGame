@@ -21,11 +21,11 @@ background1.src = './MenuImages/Menu1.png';
 
 //players
 const player1 = new Player({
-    x: 100, y: 200, playerNum: 1, imageSrc: 'BotSprite/moveWithoutFXx2.png', 
+    x: 100, y: 200, playerNum: 1, imageSrc: 'BotSprite/moveWithoutFXx2.png',  imageSrc2: 'BotSprite/leftSideMovement.png' 
 });
 
 const player2 = new Player({
-    x: 600, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', 
+    x: 600, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', imageSrc2: 'BotSprite/leftSideMovement.png'
 });
 
 const world = new WorldGrid({level:1});
@@ -86,7 +86,11 @@ function playerActionOnKey(){
 
     if(keys.leftA.pressed) player2.xVel = -2;
     else if(keys.rightA.pressed) player2.xVel = 2;
+
+    
 }
+
+
 
 animate();
 
@@ -98,8 +102,11 @@ window.addEventListener('keydown', (event) => {
         break;
         case 'a' :
             keys.a.pressed = true;
+            player1.playerState = "left";
+            
         break;
         case 'd' :
+            player1.playerState = "right";
             keys.d.pressed = true;
         break;
     }
@@ -126,9 +133,11 @@ window.addEventListener('keyup', (event) => {
             //keys.w.pressed = false;
         break;
         case 'a' :
+            player1.playerState = "leftIdle";
             keys.a.pressed = false;
         break;
         case 'd' :
+            player1.playerState = "rightIdle";
             keys.d.pressed = false;
         break;
         
