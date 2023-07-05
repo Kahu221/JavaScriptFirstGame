@@ -37,7 +37,6 @@ const TILESIZE = 25;
 //putting position of each tile according to the tilesheet
 const tyleSheet = new Image();
 tyleSheet.src = 'Tiles.png';
-//pink tiles
 for(let i = 0; i < 8; i++) tiles.push({x: i*25,y: 0});
 for(let i = 0; i < 7; i++) tiles.push({x: i*25, y :25});
 tiles.push({x: 0, y:50});

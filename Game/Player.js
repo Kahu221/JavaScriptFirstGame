@@ -9,6 +9,26 @@ const PLAYERHEIGHT_IMAGE = 46; //2x normal size;
 const GRAVITY = 0.35;
 const FRAMEHOLD = 10;
 const MOVINGFRAMES = 8;
+
+
+//TODO , make this into the aprent class and the Player class extends this
+class BasicSprite{
+    constructor({x,y,imageSrc}){
+        this.x = x;
+        this.y = y;
+        this.image = new Image();
+        this.image.src = imageSrc;
+    }
+
+    /**
+    * @param {CanvasRenderingContext2D} c
+    */
+    draw(c){
+        c.drawImage(this.image, this.x, this.y);
+    }
+}
+
+
 class Player {
  
     constructor ({
