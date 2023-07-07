@@ -6,7 +6,7 @@ const PLAYERHEIGHT = 46;
 const PLAYERWIDTH = 28;
 const PLAYERWIDTH_IMAGE = 41; //2x normal size;
 const PLAYERHEIGHT_IMAGE = 46; //2x normal size;
-const GRAVITY = 0.35;
+const GRAVITY = 0.3;
 const FRAMEHOLD = 10;
 const MOVINGFRAMES = 8;
 
@@ -30,6 +30,7 @@ class BasicSprite{
 
 
 class Player {
+    
  
     constructor ({
         x,
@@ -60,6 +61,8 @@ class Player {
         this.playerNum = playerNum;
         //rightIdle, leftIdle, right, left
         this.playerState = "rightIdle";
+        //all projectiles
+        this.projectiles = [];
     }
     /**
     * @param {CanvasRenderingContext2D} c
@@ -159,16 +162,16 @@ class Player {
     
     //update and adjust collisions for all 4 sides
     updateCollisionWithTiles(c){
-        this.topCollision(c);
-        this.rightCollision(c);
-        this.leftCollision(c);
-        this.bottomCollision(c);
+        if(this.topCollision(c)) console.log("top");
+        if(this.leftCollision(c)) console.log("left");;
+        if(this.bottomCollision(c)) console.log("bottom");
+        if(this.rightCollision(c)) console.log("right");
     }
    
     //right side collision check and adjustments
     rightCollision(c){
         //right hit box values
-        let rightX = this.x + PLAYERWIDTH - 6;
+        let rightX = this.x + PLAYERWIDTH;
         let rightY = this.y+10;
         let rightW = 5;
         let rightH = 30;
@@ -179,17 +182,18 @@ class Player {
         let tileY = tileYPos * TILESIZE;
         let tileY2 = (tileYPos + 1) * TILESIZE;
         //current Tile that is being checked
+        //c.fillRect(rightX,rightY,rightW,rightH);
         // c.fillStyle = 'red';
         // c.fillRect(tileX,tileY,TILESIZE,TILESIZE);
         if(tileXPos >= 60 || tileYPos >= 28) return false;
         if((map1[tileYPos][tileXPos] != 0) && this.collision(rightX,rightY,rightW,rightH,tileX,tileY,TILESIZE,TILESIZE)) {
             this.xVel = 0;
-            this.x = tileX - 23;
+            this.x = tileX - TILESIZE - 4;
             return true;
         }
         else if((map1[tileYPos + 1][tileXPos] != 0) && this.collision(rightX,rightY,rightW,rightH,tileX,tileY2,TILESIZE,TILESIZE)) {
             this.xVel = 0;
-            this.x = tileX - 23;
+            this.x = tileX - 29;
             return true;
         }
         return false;
@@ -231,21 +235,23 @@ class Player {
      * @param {*} c canavs to draw on 
      * @returns boolean if the bottom hit box is touching a tile with a non zero value
      */
-    //TODO fix the math in this method as it makes no sense the hit box drawn does not add up with the 
-    // used for the hitbox implemented here
     bottomCollision(c){
-        let bottomX = this.x + (PLAYERWIDTH / 3);
+        let bottomX = this.x + (PLAYERWIDTH / 4);
         let bottomY = this.y + 30;
-        let bottomW = 13;
+        let bottomW = 18;
         let bottomH = 14;
         //tile to check values
         let tileXPos = Math.floor((bottomX) / TILESIZE);
+        let tileX2Pos = Math.ceil((bottomX) / TILESIZE);
         let tileYPos = Math.ceil(bottomY/ TILESIZE);
         let tileX = tileXPos * TILESIZE;
+        let tileX2 = tileX2Pos * TILESIZE;
         let tileY = tileYPos * TILESIZE;
         //current Tile that is being checked
-        // c.fillStyle = 'red';
+        c.fillStyle = 'red';
         // c.fillRect(tileX,tileY,25,25);
+        // c.fillRect(tileX2,tileY,25,25);
+        // c.fillRect(bottomX,bottomY,bottomW,bottomH);
         if(tileXPos >= 60 || tileYPos >= 28) return false;
         if((map1[tileYPos][tileXPos] != 0) && this.collision(bottomX,bottomY,bottomW,bottomH,tileX,tileY,TILESIZE,TILESIZE)) {
             this.yVel = 0;
@@ -253,6 +259,13 @@ class Player {
             this.y = tileY - PLAYERHEIGHT + 2;
             return true;
         }
+        if((map1[tileYPos][tileX2Pos] != 0) && this.collision(bottomX,bottomY,bottomW,bottomH,tileX2,tileY,TILESIZE,TILESIZE)) {
+            this.yVel = 0;
+            //must find a fix for this awful + 2
+            this.y = tileY - PLAYERHEIGHT + 2;
+            return true;
+        }
+        
         return false;
     }
     //c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 3, 13,14);
