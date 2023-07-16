@@ -121,6 +121,7 @@ class Player {
                 );
                 break;
         }
+        this.drawBullets(c);
     }
     /**
     * @param {HTMLCanvasElement} canvas
@@ -271,7 +272,7 @@ class Player {
 
         return false;
     }
-    //c.fillRect(this.x + (PLAYERWIDTH / 3), this.y + 3, 13,14);
+   
     topCollision(c) {
         let bottomX = this.x + (PLAYERWIDTH / 3);
         let bottomY = this.y + 3;
@@ -293,6 +294,24 @@ class Player {
             return true;
         }
         return false;
+    }
+
+    shoot(){
+        this.projectiles.push(new Projectile({
+            x: this.x + (PLAYERWIDTH_IMAGE / 2),
+            y: this.y + (PLAYERHEIGHT / 2),
+            width: 3,
+            height: 3,
+            direction: (this.playerState === "right" || this.playerState === "rightIdle") ? "right" : "left"
+        }));
+    }
+
+    drawBullets(c){
+
+        this.projectiles.forEach(function(bullet){
+            bullet.step();
+            bullet.draw(c);
+        });
     }
     /**
      *  collision check between 2 rectangles

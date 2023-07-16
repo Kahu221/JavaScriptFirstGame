@@ -4,6 +4,7 @@ class Projectile {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.imageSRC = imageSRC;
         if (imageSRC !== undefined) {
             this.image = new Image();
             this.image.src = imageSRC;
@@ -15,5 +16,17 @@ class Projectile {
     step() {
         if (this.direction == "right") this.x++;
         else this.x--;
+    }
+
+    /**
+    * @param {CanvasRenderingContext2D} c
+    */
+    draw(c){
+        if(this.imageSRC === undefined){
+            c.fillStyle = "black";
+            c.fillRect(this.x, this.y, this.width, this.height);
+        } else {
+            c.drawImage(this.image, this.x, this.y);
+        }
     }
 }

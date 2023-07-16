@@ -132,6 +132,9 @@ window.addEventListener('keydown', (event) => {
             player1.playerState = "right";
             keys.d.pressed = true;
         break;
+        case 't' :
+            player1.shoot();
+        break;
     }
 
     switch(event.key){
