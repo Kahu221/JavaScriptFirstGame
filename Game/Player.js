@@ -300,8 +300,8 @@ class Player {
         this.projectiles.push(new Projectile({
             x: this.x + (PLAYERWIDTH_IMAGE / 2),
             y: this.y + (PLAYERHEIGHT / 2),
-            width: 3,
-            height: 3,
+            width: 6,
+            height: 6,
             direction: (this.playerState === "right" || this.playerState === "rightIdle") ? "right" : "left"
         }));
     }
@@ -335,4 +335,7 @@ class Player {
         return false;
     }
 
+   
+
+    
 }

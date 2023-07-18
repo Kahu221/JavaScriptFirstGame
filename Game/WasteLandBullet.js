@@ -99,6 +99,7 @@ function animate(){
     player2.draw(c);
     player1.draw(c);
     playerActionOnKey();
+    tileCollisionOnBullets();
 }
 
 function playerActionOnKey(){
@@ -118,6 +119,14 @@ function playerActionOnKey(){
 
 animate();
 
+function tileCollisionOnBullets(){
+    player1.projectiles.forEach(bullet => {
+        let bulletXIndex = Math.floor(bullet.x / 25);
+        let bulletYIndex = Math.floor(bullet.y / 25);
+        c.fillRect(bulletXIndex*25, bulletYIndex*25, 25,25);
+        if(map1[bulletYIndex][bulletXIndex] !== 0) map1[bulletYIndex][bulletXIndex] = 0;
+    });    
+}
 window.addEventListener('keydown', (event) => {
     switch(event.key){
         case 'w' : 

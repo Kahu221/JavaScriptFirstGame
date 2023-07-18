@@ -1,3 +1,5 @@
+const stepCount = 5;
+
 class Projectile {
     constructor({ x, y, width, height, imageSRC, direction }) {
         this.x = x;
@@ -14,8 +16,8 @@ class Projectile {
     }
 
     step() {
-        if (this.direction == "right") this.x++;
-        else this.x--;
+        if (this.direction == "right") this.x+= stepCount;
+        else this.x -= stepCount;
     }
 
     /**
@@ -29,4 +31,7 @@ class Projectile {
             c.drawImage(this.image, this.x, this.y);
         }
     }
+
+   
+
 }
