@@ -1,12 +1,26 @@
 //setup of canvas
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
-canvas.width = 1500;
-canvas.height = 700;
+const canvasWidth = 1500;
+const canvasHeight = 700;
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
 c.fillRect(0,0, canvas.width, canvas.height);
+// 0 = menu screen, 1 = keys screen, 2 = map
+let mapState = 0;
 
+//mouse movement for button hover
+let mouseX = 0;
+let mouseY = 0;
+const mousePosText = document.getElementById('mouse-pos');
+let mousePos = { x: undefined, y: undefined };
 
-
+window.addEventListener('mousemove', (event) => {
+    if(event != undefined){
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
+});
 //background layers
 const background5 = new Image();
 background5.src = './MenuImages/MenuBack.png';
@@ -18,7 +32,15 @@ const background2 = new Image();
 background2.src = './MenuImages/Menu2.png';
 const background1 = new Image();
 background1.src = './MenuImages/Menu1.png';
-
+const blackShade = new Image();
+blackShade.src = './MenuImages/blackShade.png';
+//menu layers
+const title = new Image();
+title.src = './MenuImages/Title.png';
+const ButtonSheet = new Image();
+ButtonSheet.src = './MenuImages/Buttons.png';
+const controls = new Image();
+controls.src = './MenuImages/controls.png';
 const blimp = new BasicSprite({x: -50, y: 100, imageSrc: "./MenuImages/Blimp.png"});
 const trucks = new BasicSprite({x: 1200, y: 545, imageSrc: "./MenuImages/Trucks.png"});
 const van = new BasicSprite({x: -200, y: 400, imageSrc: "./MenuImages/Van.png"});
@@ -66,12 +88,55 @@ const keys = {
 function updateBackground(){
     blimp.x += 0.5;
     trucks.x -= 0.7;
-    //van.x += 1;
+    van.x += 1;
 
-    if(trucks.x < 500) trucks.x = 1200;
+    if(trucks.x < 300) trucks.x = 1200;
     if(blimp.x > canvas.width + 100) blimp.x = -100;
    // if(van.x > canvas.width + 100) van.x = -100;
 }
+
+function drawMainMenu(){
+    let buttonHeight = 97;
+    let buttonWidth = 200;
+    console.log(mouseX + "      " + mouseY);
+    c.drawImage(background5,0,0);
+    blimp.draw(c);
+    c.drawImage(background4,0,0);
+    trucks.draw(c);
+    c.drawImage(background3,0,0);
+    c.drawImage(background2,0,0);
+    van.draw(c);
+    c.drawImage(background1,0,0);
+    if(mapState === 1){
+        c.drawImage(blackShade,0,0);
+        c.drawImage(controls,600,50);
+       if(collision(mouseX,mouseY,1,1,300,canvasHeight/2 - 30, buttonWidth,buttonHeight)){
+        onmouseup = (event) => mapState = 0;
+        c.drawImage(ButtonSheet,buttonWidth,buttonHeight*2,buttonWidth,buttonHeight,300,canvasHeight/2 - 30,buttonWidth,buttonHeight);
+       } else {
+        c.drawImage(ButtonSheet,0,buttonHeight*2,buttonWidth,buttonHeight,300,canvasHeight/2 - 30,buttonWidth,buttonHeight);
+       }
+       return;
+    }
+    
+    c.drawImage(title,canvasWidth/2 - 300,canvasHeight/2 - 120);
+    
+    if(collision(mouseX,mouseY,1,1,(canvasWidth/2) - 90, canvasHeight/2, buttonWidth,buttonHeight)){
+        onmouseup = (event) => mapState = 2;
+        c.drawImage(ButtonSheet,buttonWidth,0,buttonWidth,buttonHeight,(canvasWidth/2) - 90,canvasHeight/2,buttonWidth,buttonHeight);
+    } else {
+        c.drawImage(ButtonSheet,0,0,buttonWidth,buttonHeight,(canvasWidth/2) - 90,canvasHeight/2,buttonWidth,buttonHeight);
+    }
+    //keys
+    if(collision(mouseX,mouseY,1,1,(canvasWidth/2) - 90, (canvasHeight/2) + buttonHeight + 20, buttonWidth,buttonHeight)){
+        c.drawImage(ButtonSheet,buttonWidth,buttonHeight,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
+        onmouseup = (event) => mapState = 1;
+    } else{
+        c.drawImage(ButtonSheet,0,buttonHeight,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
+    }
+}
+
+
 
 function drawBackground(){
     c.drawImage(background5,0,0);
@@ -85,12 +150,7 @@ function drawBackground(){
     c.drawImage(background1,0,0);
 }
 
-function animate(){
-    window.requestAnimationFrame(animate);
-    c.fillStyle = 'black';
-    c.fillRect(0,0,canvas.width, canvas.height);
-    //draw blackground / update moving background images
-    updateBackground();
+function firstMap(){
     drawBackground();
     world.loadMap(c);
     //update and draw players next
@@ -101,6 +161,27 @@ function animate(){
     playerActionOnKey();
     tileCollisionOnBullets();
 }
+function animate(){
+    window.requestAnimationFrame(animate);
+    c.fillStyle = 'black';
+    c.fillRect(0,0,canvas.width, canvas.height);
+    //draw blackground / update moving background images
+    updateBackground();
+    switch(mapState){
+        case 0:
+        case 1:
+            drawMainMenu();
+        break;
+        case 2 :
+            firstMap();
+        break;
+        default :
+            throw new Error("Issue with map state");
+    }
+    
+}
+
+
 
 function playerActionOnKey(){
     player1.xVel = 0;
@@ -187,3 +268,13 @@ window.addEventListener('keyup', (event) => {
     }
     console.log(event.key);
 });
+//must figure out better way to do this as player also has this
+function collision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
+    if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
+        r1x <= r2x + r2w &&    // r1 left edge past r2 right
+        r1y + r1h >= r2y &&    // r1 top edge past r2 bottom
+        r1y <= r2y + r2h) {    // r1 bottom edge past r2 top
+        return true;
+    }
+    return false;
+}
