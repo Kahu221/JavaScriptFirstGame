@@ -51,7 +51,7 @@ const player1 = new Player({
 });
 
 const player2 = new Player({
-    x: 600, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', imageSrc2: 'BotSprite/leftSideMovement.png'
+    x: 1200, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', imageSrc2: 'BotSprite/leftSideMovement.png'
 });
 
 const world = new WorldGrid({level:1});
@@ -159,8 +159,10 @@ function firstMap(){
     player2.draw(c);
     player1.draw(c);
     playerActionOnKey();
-    tileCollisionOnBullets();
+    tileCollisionOnBullets(player1);
+    tileCollisionOnBullets(player2);
 }
+
 function animate(){
     window.requestAnimationFrame(animate);
     c.fillStyle = 'black';
@@ -200,14 +202,31 @@ function playerActionOnKey(){
 
 animate();
 
-function tileCollisionOnBullets(){
-    player1.projectiles.forEach(bullet => {
+/**
+ * checks all current bullets of a player, if current bullet is colliding with a non zero tile, change tile and then remove the bullet
+ * @param {*} p player to pass
+ */
+function tileCollisionOnBullets(p){
+    let toRemove = [];
+
+    p.projectiles.forEach(bullet => {
         let bulletXIndex = Math.floor(bullet.x / 25);
         let bulletYIndex = Math.floor(bullet.y / 25);
-        c.fillRect(bulletXIndex*25, bulletYIndex*25, 25,25);
-        if(map1[bulletYIndex][bulletXIndex] !== 0) map1[bulletYIndex][bulletXIndex] = 0;
-    });    
+        //c.fillRect(bulletXIndex*25, bulletYIndex*25, 25,25);
+        
+        if(map1[bulletYIndex][bulletXIndex] !== 0){
+            map1[bulletYIndex][bulletXIndex] = 0;
+            toRemove.push(p.projectiles.indexOf(bullet));  
+        } 
+        //bullets out of bounds
+        if(bullet.x > canvasWidth || bullet.x < 0 || bullet.y > canvasHeight || bullet.y < 0) toRemove.push(p.projectiles.indexOf(bullet))
+    });   
+    
+    
+    p.removeBullets(toRemove);
 }
+
+
 window.addEventListener('keydown', (event) => {
     switch(event.key){
         case 'w' : 
@@ -224,6 +243,9 @@ window.addEventListener('keydown', (event) => {
         break;
         case 't' :
             player1.shoot();
+        break;
+        case '/' :
+            player2.shoot();
         break;
     }
 

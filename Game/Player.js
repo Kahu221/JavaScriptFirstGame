@@ -313,6 +313,14 @@ class Player {
             bullet.draw(c);
         });
     }
+
+    /**
+     * removes allBullets from the array of indexes given
+     * @param {*} arrayOfIndexes 
+     */
+    removeBullets(arrayOfIndexes){
+        arrayOfIndexes.forEach(i => {if(i != -1) this.projectiles.splice(i,1);})
+    }
     /**
      *  collision check between 2 rectangles
      * @param {*} r1x 
