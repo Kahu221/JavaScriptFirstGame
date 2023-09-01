@@ -6,22 +6,21 @@ const canvasHeight = 700;
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 c.fillRect(0,0, canvas.width, canvas.height);
-// 0 = menu screen, 1 = keys screen, 2 = map
+// 0 = menu screen, 1 = keys screen, 2 = map1, 3 = player has won 
 let mapState = 0;
-
 //mouse movement for button hover
 let mouseX = 0;
 let mouseY = 0;
 const mousePosText = document.getElementById('mouse-pos');
 let mousePos = { x: undefined, y: undefined };
-
 window.addEventListener('mousemove', (event) => {
     if(event != undefined){
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
 });
-//background layers
+
+//background layer assets
 const background5 = new Image();
 background5.src = './MenuImages/MenuBack.png';
 const background4 = new Image();
@@ -34,7 +33,7 @@ const background1 = new Image();
 background1.src = './MenuImages/Menu1.png';
 const blackShade = new Image();
 blackShade.src = './MenuImages/blackShade.png';
-//menu layers
+//menu layer assest
 const title = new Image();
 title.src = './MenuImages/Title.png';
 const ButtonSheet = new Image();
@@ -98,7 +97,6 @@ function updateBackground(){
 function drawMainMenu(){
     let buttonHeight = 97;
     let buttonWidth = 200;
-    console.log(mouseX + "      " + mouseY);
     c.drawImage(background5,0,0);
     blimp.draw(c);
     c.drawImage(background4,0,0);
@@ -136,7 +134,9 @@ function drawMainMenu(){
     }
 }
 
-
+function hasWon(p){
+    
+}
 
 function drawBackground(){
     c.drawImage(background5,0,0);
@@ -151,16 +151,29 @@ function drawBackground(){
 }
 
 function firstMap(){
+    //loadMap
     drawBackground();
     world.loadMap(c);
+    //check win and update conditions
+    if(player1.dead){
+        p2Score++;
+    }
+    if(player2.dead) {
+        p1Score++;
+    }
     //update and draw players next
     player1.update(canvas);
     player2.update(canvas);
     player2.draw(c);
     player1.draw(c);
+    //check for key input
     playerActionOnKey();
+    //bullet collision with map
     tileCollisionOnBullets(player1);
     tileCollisionOnBullets(player2);
+    //bullet collision to each player
+    bulletCollisionWithPlayers(player1,player2);
+    bulletCollisionWithPlayers(player2,player1);
 }
 
 function animate(){
@@ -222,8 +235,13 @@ function tileCollisionOnBullets(p){
         if(bullet.x > canvasWidth || bullet.x < 0 || bullet.y > canvasHeight || bullet.y < 0) toRemove.push(p.projectiles.indexOf(bullet))
     });   
     
-    
     p.removeBullets(toRemove);
+}
+
+function bulletCollisionWithPlayers(p,p2){
+    p.projectiles.forEach(bullet => {
+        if(p2.collision(p2.x, p2.y, PLAYERWIDTH, PLAYERHEIGHT, bullet.x, bullet.y, bullet.width, bullet.height)) p2.dead = true;
+    })
 }
 
 
@@ -300,3 +318,5 @@ function collision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
     }
     return false;
 }
+
+

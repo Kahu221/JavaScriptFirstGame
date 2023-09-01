@@ -6,7 +6,7 @@ const PLAYERHEIGHT = 46;
 const PLAYERWIDTH = 28;
 const PLAYERWIDTH_IMAGE = 41; //2x normal size;
 const PLAYERHEIGHT_IMAGE = 46; //2x normal size;
-const GRAVITY = 0.3;
+const GRAVITY = 0.2;
 const FRAMEHOLD = 10;
 const MOVINGFRAMES = 8;
 
@@ -68,6 +68,7 @@ class Player {
     * @param {CanvasRenderingContext2D} c
     */
     draw(c) {
+        if(this.dead) return;
         switch (this.playerState) {
             case "rightIdle":
                 c.drawImage(this.image,
@@ -157,7 +158,7 @@ class Player {
     jump() {
         if (!this.jumping) {
             this.jumping = true;
-            this.yVel = -7;
+            this.yVel = -6;
             this.y += + this.yVel;
         }
     }
@@ -342,6 +343,8 @@ class Player {
         }
         return false;
     }
+
+    
 
    
 
