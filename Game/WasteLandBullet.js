@@ -50,15 +50,15 @@ const trucks = new BasicSprite({x: 1200, y: 545, imageSrc: "./MenuImages/Trucks.
 const van = new BasicSprite({x: -200, y: 400, imageSrc: "./MenuImages/Van.png"});
 
 //players
-const player1 = new Player({
+let player1 = new Player({
     x: 100, y: 200, playerNum: 1, imageSrc: 'BotSprite/moveWithoutFXx2.png',  imageSrc2: 'BotSprite/leftSideMovement.png' 
 });
 
-const player2 = new Player({
+let player2 = new Player({
     x: 1200, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', imageSrc2: 'BotSprite/leftSideMovement.png'
 });
 
-const world = new WorldGrid({level:1});
+let world = new WorldGrid({level:1});
 
 //REMEMBER THIS LEADS TO MENU
 let stage = 0;
@@ -160,7 +160,19 @@ function drawPlayerWon(playerNum){
 
     if(collision(mouseX,mouseY,1,1,(canvasWidth/2) - 90, (canvasHeight/2) + buttonHeight + 20, buttonWidth,buttonHeight)){
         c.drawImage(ButtonSheet,buttonWidth,buttonHeight*2,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
-        onmouseup = (event) => mapState = 0;
+        onmouseup = (event) =>{
+            mapState = 0;
+            player1.dead = false;
+            player2.dead = false;
+            world = new WorldGrid({level:1});
+            player1 = new Player({
+                x: 100, y: 200, playerNum: 1, imageSrc: 'BotSprite/moveWithoutFXx2.png',  imageSrc2: 'BotSprite/leftSideMovement.png' 
+            });
+            
+            player2 = new Player({
+                x: 1200, y: 200, playerNum: 2, imageSrc: 'BotSprite/moveWithoutFXx2.png', imageSrc2: 'BotSprite/leftSideMovement.png'
+            });
+        } 
     } else{
         c.drawImage(ButtonSheet,0,buttonHeight*2,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
     }
@@ -193,6 +205,8 @@ function firstMap(){
     //bullet collision to each player
     bulletCollisionWithPlayers(player1,player2);
     bulletCollisionWithPlayers(player2,player1);
+    if(player1.y > canvasHeight + PLAYERHEIGHT) player1.dead = true;
+    if(player2.y > canvasHeight + PLAYERHEIGHT) player2.dead = true;
 }
 
 function animate(){
