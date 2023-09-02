@@ -33,6 +33,11 @@ const background1 = new Image();
 background1.src = './MenuImages/Menu1.png';
 const blackShade = new Image();
 blackShade.src = './MenuImages/blackShade.png';
+//"text" assest
+const numbers = new Image();
+numbers.src = './MenuImages/numbers.png';
+const playerWonImage = new Image();
+playerWonImage.src = './MenuImages/PlayerWon.png'
 //menu layer assest
 const title = new Image();
 title.src = './MenuImages/Title.png';
@@ -134,9 +139,7 @@ function drawMainMenu(){
     }
 }
 
-function hasWon(p){
-    
-}
+
 
 function drawBackground(){
     c.drawImage(background5,0,0);
@@ -144,12 +147,24 @@ function drawBackground(){
     c.drawImage(background4,0,0);
     trucks.draw(c);
     c.drawImage(background3,0,0);
-    
     c.drawImage(background2,0,0);
-    // van.draw(c);
     c.drawImage(background1,0,0);
 }
 
+function drawPlayerWon(playerNum){
+    let buttonHeight = 97;
+    let buttonWidth = 200;
+    drawBackground();
+    c.drawImage(playerWonImage,350, 250);
+    c.drawImage(numbers, 100*playerNum, 0,100,80, 740,250,100,80);
+
+    if(collision(mouseX,mouseY,1,1,(canvasWidth/2) - 90, (canvasHeight/2) + buttonHeight + 20, buttonWidth,buttonHeight)){
+        c.drawImage(ButtonSheet,buttonWidth,buttonHeight*2,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
+        onmouseup = (event) => mapState = 0;
+    } else{
+        c.drawImage(ButtonSheet,0,buttonHeight*2,buttonWidth,buttonHeight,(canvasWidth/2) - 90,(canvasHeight/2) + buttonHeight + 20,buttonWidth,buttonHeight);
+    }
+}
 function firstMap(){
     //loadMap
     drawBackground();
@@ -157,9 +172,13 @@ function firstMap(){
     //check win and update conditions
     if(player1.dead){
         p2Score++;
+        drawPlayerWon(2);
+        return;
     }
     if(player2.dead) {
         p1Score++;
+        drawPlayerWon(1);
+        return;
     }
     //update and draw players next
     player1.update(canvas);
